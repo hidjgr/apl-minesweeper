@@ -9,19 +9,19 @@ newgame ← (⊣⍴(⊂((×/⊣)?(×/⊣)))⌷(/∘1 0 (⊢,((×/⊣)-⊢))))  �
 part3 ← ((⊂((÷∘3 ≢)↑⊢)),(⊂(((÷∘2 ≢)↑⊢) ((÷∘3 ≢)↓⊢))),(⊂(((- ÷∘3) ≢)↑⊢)))
 part9 ← ((⍉¨(↑(part3 ⍉)¨))part3)                    ⍝ Partition a 3n×3m matrix into a 3×3 matrix of n×m matrices
 
-edges ← ((⊢∨(⌽⊖))((toprow∨leftcol) (3∘/ 3∘⌿)))      ⍝ Create a matrix of shape 3×⍴⍵
+edges ← ((⊢∨(⌽⊖))((toprow∨leftcol) (3∘/ 3∘⌿)))      ⍝ Create a matrix of shape 3×⍴⍵, with 1s on all edges and filled with 0s
 edgemask ← part9 edges                                ⍝ Partition that matrix
 
 neighbors ← ↑(+/(+/((~edgemask)⌊shift)))              ⍝ Counts mines surrounding tiles
 grid ← (neighbors⌊(-∘1(10∘×~)))                       ⍝ Replaces the mine tiles with ¯1
 
 expand ← ↑(⌈/(⌈/((~edgemask)⌊shift)))                 ⍝ Expands the 1s in a boolean matrix in every direction until the edges are reached
-fillspace ← ((⊢∨(expand (0∘=(grid ⊣))∧⊢))⍣≡)          ⍝ Expands the 1s in ⍵ over ⍺ untill all reachable 0s in ⍺ are covered
+fillspace ← ((⊢∨(expand (0∘=(grid ⊣))∧⊢))⍣≡)          ⍝ Expands the 1s in ⍵ over ⍺ until all reachable 0s in ⍺ and their neighbors are revealed
 
 disp ← {'⎕* 12345678'[3+(grid ⍺)⌊(2-⍨10×⍵)]}          ⍝ Display the game ""graphically""
 play ← {(⍵⌷S)←1⋄⎕←M disp M fillspace S⋄M fillspace S} ⍝ Play, requires the game layout to be called M, and the revealed tiles S (initially a zero matrix of shape ⍴M)
                                                       ⍝ Reveals the tile at coordinate ⍵
-						                                          ⍝ Must manually create and then update S, call like so: S ← play x y
+						      ⍝ Must manually create and then update S, call like so: S ← play x y
 
 ⍝ M ← x y newgame n
 ⍝ S ← (⍴M)⍴0
